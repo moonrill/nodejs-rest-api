@@ -1,10 +1,12 @@
-import express, { Application, NextFunction, Request, Response } from "express";
+import express, { type Application, type NextFunction, type Request, type Response } from 'express'
 
-const app: Application = express();
-const port: Number = 4000;
+const app: Application = express()
+const port: number = 4000
 
-app.use("/", (req: Request, res: Response, next: NextFunction) => {
-  res.status(200).send({ data: "Hello World!" });
-});
+app.use('/', (req: Request, res: Response, next: NextFunction) => {
+  res.status(200).send({ data: 'Hello World!' })
+})
 
-app.listen(port, () => console.log(`Server running on port ${port}`));
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`)
+})
