@@ -1,9 +1,13 @@
 import { Router, type NextFunction, type Request, type Response } from 'express'
+import { logger } from '../utils/logger'
 
 export const ProductRouter: Router = Router()
 
-// http://localhost:4000/product
 ProductRouter.get('/', (req: Request, res: Response, next: NextFunction) => {
+  logger.info('Success get product data')
   res.status(200).send({ status: true, statusCode: 200, data: [{ name: 'Sepatu Sport', price: 500000 }] })
-  next()
+})
+ProductRouter.post('/', (req: Request, res: Response, next: NextFunction) => {
+  logger.info('Success add new product data')
+  res.status(200).send({ status: true, statusCode: 200, data: req.body })
 })
