@@ -12,5 +12,7 @@
   },
   "plugins": ["@typescript-eslint"],
   "ignorePatterns": ["dist", "**/build/*", "**/node_modules/*", "**/public/*"],
-  "rules": {}
+  "rules": {
+    "@typescript-eslint/explicit-function-return-type": "off"
+  }
 }
