@@ -1,8 +1,14 @@
 import { type NextFunction, type Request, type Response } from 'express'
 import { v4 as uuidv4 } from 'uuid'
 import { logger } from '../utils/logger'
-import { createProductValidation } from '../validations/product.validation'
-import { addProductToDB, getProductById, getProductByName, getProductFromDb } from './../services/product.service'
+import { createProductValidation, updateProductValidation } from '../validations/product.validation'
+import {
+  addProductToDB,
+  getProductById,
+  getProductByName,
+  getProductFromDb,
+  updateProductById
+} from './../services/product.service'
 
 export const createProduct = async (req: Request, res: Response, next: NextFunction) => {
   req.body.product_id = uuidv4()
@@ -47,4 +53,24 @@ export const getProduct = async (req: Request, res: Response) => {
   const products: any = await getProductFromDb()
   logger.info('Success get product data')
   return res.status(200).send({ status: true, statusCode: 200, data: products })
+}
+
+export const updateProduct = async (req: Request, res: Response) => {
+  const { id } = req.params
+
+  const { error, value } = updateProductValidation(req.body)
+
+  if (error) {
+    logger.error(error.message)
+    return res.status(422).send({ status: false, statusCode: 422, message: error.details[0].message })
+  }
+
+  try {
+    await updateProductById(id, value)
+    logger.info('Success update product data')
+    return res.status(200).send({ status: true, statusCode: 200, message: 'Update product success' })
+  } catch (err) {
+    logger.error(err)
+    return res.status(422).send({ status: false, statusCode: 422, message: err })
+  }
 }
