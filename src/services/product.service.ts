@@ -39,3 +39,7 @@ export const addProductToDB = async (payload: ProductType) => {
 export const updateProductById = async (id: string, payload: ProductType) => {
   return await productModel.findOneAndUpdate({ product_id: id }, { $set: payload })
 }
+
+export const deleteProductById = async (id: string) => {
+  return await productModel.findOneAndDelete({ product_id: id })
+}

@@ -4,6 +4,7 @@ import { logger } from '../utils/logger'
 import { createProductValidation, updateProductValidation } from '../validations/product.validation'
 import {
   addProductToDB,
+  deleteProductById,
   getProductById,
   getProductByName,
   getProductFromDb,
@@ -47,7 +48,7 @@ export const getProduct = async (req: Request, res: Response) => {
       logger.info('Success get product data')
       return res.status(200).send({ status: true, statusCode: 200, data: products })
     }
-    return res.status(404).send({ status: false, statusCode: 404, message: `Product with name = ${name} not found` })
+    return res.status(404).send({ status: false, statusCode: 404, message: `Product with name: ${name} is not found` })
   }
 
   const products: any = await getProductFromDb()
@@ -66,9 +67,28 @@ export const updateProduct = async (req: Request, res: Response) => {
   }
 
   try {
-    await updateProductById(id, value)
-    logger.info('Success update product data')
-    return res.status(200).send({ status: true, statusCode: 200, message: 'Update product success' })
+    const result = await updateProductById(id, value)
+    if (result) {
+      logger.info('Success update product data')
+      return res.status(200).send({ status: true, statusCode: 200, message: 'Update product success' })
+    }
+    return res.status(404).send({ status: false, statusCode: 404, message: `Product with id: ${id} is not found` })
+  } catch (err) {
+    logger.error(err)
+    return res.status(422).send({ status: false, statusCode: 422, message: err })
+  }
+}
+
+export const deleteProduct = async (req: Request, res: Response) => {
+  const { id } = req.params
+
+  try {
+    const result = await deleteProductById(id)
+    if (result) {
+      logger.info('Success delete product data')
+      return res.status(200).send({ status: true, statusCode: 200, message: 'Delete product success' })
+    }
+    return res.status(404).send({ status: false, statusCode: 404, message: `Product with id: ${id} is not found` })
   } catch (err) {
     logger.error(err)
     return res.status(422).send({ status: false, statusCode: 422, message: err })
