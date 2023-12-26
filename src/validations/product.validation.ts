@@ -1,20 +1,18 @@
 import Joi from 'joi'
-
-interface ProductInterface {
-  name: string
-  price: number
-}
+import type ProductType from '../types/product.type'
 
 /**
  * Validates the given payload for creating a product.
  *
- * @param {ProductInterface} payload - The payload containing the product data.
+ * @param {ProductType} payload - The payload containing the product data.
  * @return {*} - The result of the validation.
  */
-export const createProductValidation = (payload: ProductInterface) => {
+export const createProductValidation = (payload: ProductType) => {
   const schema = Joi.object({
+    product_id: Joi.string().required(),
     name: Joi.string().required(),
-    price: Joi.number().allow('', null)
+    price: Joi.number().allow('', null),
+    color: Joi.string().allow('', null)
   })
 
   return schema.validate(payload)
