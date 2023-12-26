@@ -1,6 +1,14 @@
 import { type NextFunction, type Request, type Response } from 'express'
 import { logger } from '../utils/logger'
 import { createProductValidation } from '../validations/product.validation'
+import { getProductFromDb } from './../services/product.service'
+
+interface ProductType {
+  product_id: string
+  name: string
+  price: number
+  color: string
+}
 
 export const createProduct = (req: Request, res: Response, next: NextFunction) => {
   const { error, value } = createProductValidation(req.body)
@@ -14,11 +22,8 @@ export const createProduct = (req: Request, res: Response, next: NextFunction) =
   return res.status(200).send({ status: true, statusCode: 200, message: 'Add product success', data: value })
 }
 
-export const getProduct = (req: Request, res: Response) => {
-  const products = [
-    { name: 'Smart Band X9', price: 350000 },
-    { name: 'Samsung Galaxy S23', price: 10000000 }
-  ]
+export const getProduct = async (req: Request, res: Response) => {
+  const products: any = await getProductFromDb()
 
   const {
     params: { name }
@@ -28,7 +33,7 @@ export const getProduct = (req: Request, res: Response) => {
     // Create a regular expression to match the query name
     const regex = new RegExp(name, 'i')
     // Filter products based on the regular expression match
-    const filteredProducts = products.filter((product) => regex.test(product.name))
+    const filteredProducts = products.filter((product: ProductType) => regex.test(product.name))
 
     // Check if the filtered products array is empty
     if (filteredProducts.length === 0) {
